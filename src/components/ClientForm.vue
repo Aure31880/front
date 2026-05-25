@@ -30,13 +30,13 @@ export default {
           email: this.email,
           preferred_style: this.preferred_style
         });
-        alert("Client créé : " + res.data.id);
-        this.name = this.phone = this.email = this.preferred_style = "";
+        alert("Client créé : " + res.data.id)
+        this.name = this.phone = this.email = this.preferred_style = ""
       } catch (err) {
-        console.error(err);
-        alert("Erreur création client");
+        console.error(err)
+        alert("Erreur création client")
       }
     }
   }
-};
+}
 </script>

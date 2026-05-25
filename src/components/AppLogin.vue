@@ -24,7 +24,7 @@ export default {
           password: password.value
         })
         localStorage.setItem("access_token", res.data.access_token)
-        router.push("/dashboard") // redirige vers la page admin
+        router.push("/dashboard")
       } catch (err) {
         alert("Login failed")
       }

@@ -17,7 +17,7 @@ const routes = [
     meta: { requiresAuth: true }
   },
   {
-    path: '/book',
+    path: '/booking',
     name: 'Booking',
     component: BookingView,
     meta: { hideLayout: true } // on va utiliser cette info pour cacher sidebar/topbar

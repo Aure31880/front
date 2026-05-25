@@ -1,7 +1,7 @@
 <template>
   <div class="booking-page">
     <div class="booking-card">
-      <h2>🖋 Tattoo Booking</h2>
+      <h2>🖋 Prise de rendez-vous</h2>
 
       <form @submit.prevent="submitBooking">
 
@@ -16,7 +16,7 @@
         </div>
 
         <div class="form-group">
-          <label for="phone">Télephone</label>
+          <label for="phone">Télephone (optionnel)</label>
           <input id="phone" v-model="form.phone" />
         </div>
 
@@ -32,25 +32,21 @@
         </div>
 
         <div class="form-group">
-          <label>Date rendez-vous</label>
-          <input v-model="form.date" type="datetime-local" required />
+          <label>Date rendez-vous (optionnel)</label>
+          <input v-model="form.date" type="datetime-local" />
         </div>
 
-        <button type="submit">
+        <button type="submit" style="background: green">
           Valider rendez-vous
         </button>
-
-        <p v-if="success" class="success">
-          ✅ Your request has been sent successfully!
-        </p>
-
       </form>
     </div>
   </div>
 </template>
 
 <script>
-import api from '../service/api'
+import { toast } from 'vue3-toastify'
+import 'vue3-toastify/dist/index.css'
 
 export default {
   data() {
@@ -68,34 +64,39 @@ export default {
 
   methods: {
     async submitBooking() {
+      console.log('process.env.FORMSPREE ======>', import.meta.env.VITE_FORMSPREE)
       try {
-
-        // 1 Create client
-        const clientRes = await api.post('/clients/', {
-          name: this.form.name,
-          email: this.form.email,
-          phone: this.form.phone
+        const response = await fetch(import.meta.env.VITE_FORMSPREE, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json"
+          },
+          body: JSON.stringify({
+            name: this.form.name,
+            email: this.form.email,
+            message: this.form.description
+          })
         })
 
-        // 2 Create appointment
-        await api.post('/appointments/', {
-          client_id: clientRes.data.id,
-          date: this.form.date,
-          description: this.form.description
-        })
-
-        this.success = true
-        this.form = {
-          name: '',
-          email: '',
-          phone: '',
-          description: '',
-          date: ''
+        if (response.ok) {
+          toast("Votre message à bien été envoyé !", {
+            "theme": "auto",
+            "type": "success",
+            "position": "bottom-left",
+            "dangerouslyHTMLString": true
+          })
+          this.resetForm()
         }
-
       } catch (err) {
         console.error(err)
       }
+    },
+    resetForm() {
+      const keys = Object.keys(this.form)
+      keys.forEach(key => {
+        this.form[key] = ''
+      })
     }
   }
 }
